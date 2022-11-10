@@ -716,13 +716,17 @@ class AdminController extends Controller
     public function category_delete(Request $request)
     {
         $query_id = $request->delete_category_id;
-        
-        $class = Clas::where('cat_id', $query_id )->first();
-        $mtlp_eqp = AddMultipleEqp::where('class_id', $class->id);
-        $mtlp_eqp->delete();
-        $class->delete();
-        $cat = Category::findOrFail($query_id);
-        $cat->delete();
-        return redirect()->back()->with('error', 'Category Deleted successfully');
-    }
+
+        $class = Clas::where('cat_id', $query_id)->first();
+        if ($class) {
+            $mtlp_eqp = AddMultipleEqp::where('class_id', $class->id);
+            if($mtlp_eqp):
+            $mtlp_eqp->delete();
+            endif;
+            $class->delete();
+        }
+            $cat = Category::findOrFail($query_id);
+            $cat->delete();
+            return redirect()->back()->with('error', 'Category Deleted successfully');
+        }
 }
